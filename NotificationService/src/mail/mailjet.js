@@ -18,7 +18,7 @@ const mailjet = Mailjet.apiConnect(
 		options: {
 			proxy: {
 				protocol: 'http',
-				host: '10.74.50.1',
+				host: 'proxyIP',
 				port: '80',
 				auth: {
 					username: 'userlmf',

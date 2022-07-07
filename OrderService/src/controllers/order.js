@@ -17,7 +17,7 @@ exports.newOrder = async (req, res, next) => {
     const agent = tunnel.httpsOverHttp({
         proxy:
         {
-            host: "10.74.50.1",
+            host: "proxyIP",
             port: "80",
             auth: process.env.AUTH
         }
