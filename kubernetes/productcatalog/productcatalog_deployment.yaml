@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: productcatalog-deployment
+  namespace: e-commerce
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: productcatalog
+  template:
+    metadata:
+      labels:
+        app: productcatalog
+    spec:
+      containers:
+      - name: productcatalog
+        image:  productcatalog:1.0
+        ports:
+        - containerPort: 8081
+        env:
+        - name: PRODUCTCATALOG
+          valueFrom:
+            configMapKeyRef:
+              name: productcatalog-config
+        resources:
+          limits:
+            memory: 128Mi
+          requests:
+            memory: 128Mi

@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notificationservice-deployment
+  namespace: e-commerce
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: notificationservice
+  template:
+    metadata:
+      labels:
+        app: notificationservice
+    spec:
+      containers:
+      - name: notificationservice
+        image:  notificationservice:1.0
+        env:
+        - name: NOTIFICATIONSERVICE
+          valueFrom:
+            configMapKeyRef:
+              name: notificationservice-config
+        resources:
+          limits:
+            memory: 128Mi
+          requests:
+            memory: 128Mi

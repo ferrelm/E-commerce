@@ -1,0 +1,141 @@
+version: "3.2"
+
+services:
+
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_PASSWORD: "mysecretpassword"
+      POSTGRES_USER: "postgres"
+      # POSTGRES_DB: "vodafonedb"
+    ports:
+    - 5432:5432
+    volumes:
+    - postgres_data:/var/lib/postgresql/data
+
+  # pgadmin:
+  #   image: dpage/pgadmin4
+  #   container_name: pgadmin
+  #   restart: unless-stopped
+  #   environment:
+  #     PGADMIN_DEFAULT_PASSWORD: "mysecretpassword"
+  #     PGADMIN_DEFAULT_EMAIL: "root@mail.com"
+  #   ports:
+  #   - 5050:80
+  #   volumes:
+  #   - pgadmin_data:/var/lib/pgadmin
+  #   depends_on:
+  #   - postgres
+
+  mongo:
+    image: mongo:latest
+    container_name: mongo
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: "root"
+      MONGO_INITDB_ROOT_PASSWORD: "mysecretpassword"
+    ports:
+    - 27017:27017
+    volumes:
+    - mongo_data:/data/db
+    - mongo_config:/data/configdb
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    restart: unless-stopped
+    ports:
+    - 5672:5672
+    - 15672:15672
+    volumes:
+    - rabbitmq_data:/var/lib/rabbitmq/
+
+  productcatalog:
+    build: ./productcatalog/demo
+    container_name: productcatalog
+    image: productcatalog:1.0
+    # environment:
+      # SPRING_DATASOURCE_URL: "jdbc:postgresql://postgres:5432/posgres"
+      # SPRING_DATASOURCE_USERNAME: "postgres"
+      # SPRING_DATASOURCE_PASSWORD: "mysecretpassword"
+    depends_on:
+    - postgres
+    ports:
+    - 8081:8081
+    # restart: unless-stopped
+
+  orderservice:
+    build: ./orderservice 
+  # --build-arg HTTP_PROXY=${HTTP_PROXY} --build-arg HTTPS_PROXY=${HTTPS_PROXY}
+    container_name: orderservice
+    image: orderservice:1.0
+    # command: "npm config set proxy ${HTTP_PROXY} && npm config set https-proxy ${HTTPS_PROXY}"
+    environment:
+      # HTTP_PROXY: '${HTTP_PROXY}'
+      # HTTPS_PROXY: '${HTTPS_PROXY}'
+      PORT: 3000
+      # MONGO_USER: "root"
+      # MONGO_PASS: "mysecretpassword"
+      MONGO_HOST: "mongo"
+      MONGO_PORT: 27017
+      PRODUCT_HOST: "productcatalog"
+      PRODUCT_PORT: 8081
+      RABBITMQ_HOST: "rabbitmq"
+      RABBITMQ_PORT: 5672
+      # RABBITMQ_EXCHANGE: "order.notify.direct"
+      # RABBITMQ_ROUTING_KEY: "order.direct"
+      # RABBITMQ_QUEUE: "order.notify.app"
+    depends_on:
+    - rabbitmq
+    - mongo
+    - productcatalog
+    ports:
+    - 3000:3000
+    # env_file:
+    #   - ./proxy.env
+    # networks:
+    #   - frontend
+    #   - backend
+
+  notificationservice:
+    build: ./notificationservice 
+  # --build-arg HTTP_PROXY=${HTTP_PROXY} --build-arg HTTPS_PROXY=${HTTPS_PROXY}
+    container_name: noficationservice
+    image: noficationservice:1.0
+    # command: "npm config set proxy ${HTTP_PROXY} && npm config set https-proxy ${HTTPS_PROXY}"
+    # command: "npm install && node src/index.js"
+    environment:
+      # HTTP_PROXY: '${HTTP_PROXY}'
+      # HTTPS_PROXY: '${HTTPS_PROXY}'
+      RABBITMQ_HOST: "rabbitmq"
+      RABBITMQ_PORT: 5672
+      # RABBITMQ_EXCHANGE: "order.notify.direct"
+      # RABBITMQ_ROUTING_KEY: "order.direct"
+      # RABBITMQ_QUEUE: "order.notify.app"
+      MJ_APIKEY_PUBLIC: "7fe51c542927d6865d26f3af1482afe4"
+      MJ_APIKEY_PRIVATE: "1a8400548b6fc8697a4f7cdd16a63b5d"
+    # healthcheck:
+    #   test: ["CMD", "curl", "-f", "http://rabbitmq:15672"]
+    #   interval: 30s
+    #   timeout: 10s
+    #   retries: 5
+    depends_on:
+    - rabbitmq
+    - orderservice
+
+volumes:
+  postgres_data:
+  pgadmin_data:
+  mongo_data:
+  mongo_config:
+  rabbitmq_data:
+
+# networks:
+#   frontend:
+#   backend:
+
+# secrets:
+
+

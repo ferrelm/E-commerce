@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongo-deployment
+  namespace: e-commerce
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongo
+  template:
+    metadata:
+      labels:
+        app: mongo
+    spec:
+      containers:
+      - name: mongo
+        image:  mongo:latest
+        ports:
+        - containerPort: 27017
+        env:
+        - name: MONGO
+          valueFrom:
+            configMapKeyRef:
+              name: mongo-config
+              key: db
+        - name: MONGO_USER
+          valueFrom:
+            secretKeyRef:
+              name: mongo-secret
+              key: user
+        - name: MONGO_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mongo-secret
+              key: password
+        - name: MONGODATA
+          value: /data/db/mongodata
+        resources:
+          limits:
+            memory: 128Mi
+          requests:
+            memory: 128Mi
+        volumeMounts:
+        - mountPath: /data/db
+          name: mongo-data
+        - mountPath: /data/configdb
+          name: mongo-config 
+      volumes:
+      - name: mongo-data
+        persistentVolumeClaim:
+          claimName: mongo-pvclaim

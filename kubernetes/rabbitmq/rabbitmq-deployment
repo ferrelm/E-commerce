@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rabbitmq-deployment
+  namespace: e-commerce
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rabbitmq
+  template:
+    metadata:
+      labels:
+        app: rabbitmq
+    spec:
+      containers:
+      - name: rabbitmq
+        image:  rabbitmq:latest
+        ports:
+        - containerPort: 5672
+        env:
+        - name: RABBITMQ_DB
+          valueFrom:
+            configMapKeyRef:
+              name: rabbitmq-config
+              key: db
+        - name: RABBITMQ_DATA
+          value: /var/lib/rabbitmq/ 
+        resources:
+          limits:
+            memory: 128Mi
+          requests:
+            memory: 128Mi
+        volumeMounts:
+        - mountPath: /var/lib/postgresql/data
+          name: rabbitmq-data
+      volumes:
+      - name: rabbitmq-data
+        persistentVolumeClaim:
+          claimName: rabbitmq-pvclaim
