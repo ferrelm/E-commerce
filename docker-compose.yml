@@ -114,8 +114,8 @@ services:
       # RABBITMQ_EXCHANGE: "order.notify.direct"
       # RABBITMQ_ROUTING_KEY: "order.direct"
       # RABBITMQ_QUEUE: "order.notify.app"
-      MJ_APIKEY_PUBLIC: "7fe51c542927d6865d26f3af1482afe4"
-      MJ_APIKEY_PRIVATE: "1a8400548b6fc8697a4f7cdd16a63b5d"
+      MJ_APIKEY_PUBLIC: "APIKey"
+      MJ_APIKEY_PRIVATE: "APISecret"
     # healthcheck:
     #   test: ["CMD", "curl", "-f", "http://rabbitmq:15672"]
     #   interval: 30s

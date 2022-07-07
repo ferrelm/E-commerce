@@ -2,8 +2,8 @@
 
 const Mailjet = require('node-mailjet')
 
-const MJ_APIKEY_PUBLIC = "7fe51c542927d6865d26f3af1482afe4"
-const MJ_APIKEY_PRIVATE = "1a8400548b6fc8697a4f7cdd16a63b5d"
+const MJ_APIKEY_PUBLIC = "APIKey"
+const MJ_APIKEY_PRIVATE = "APISecret"
 
 
 //console.log(process.env.MJ_APIKEY_PUBLIC)
