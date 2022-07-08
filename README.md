@@ -114,3 +114,9 @@ Containers
 - [ ] [dockerfiles](https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#container-images.dockerfiles)
 - [ ] [Kubernetes](https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/annotations/)
 
+BOOKS
+
+- [ ] [Microservices](https://github.com/PacktPublishing/Microservices-with-Spring-Boot-and-Spring-Cloud-2E)
+
+
+
